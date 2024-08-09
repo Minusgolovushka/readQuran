@@ -1,16 +1,12 @@
 # readquran
 
-A new Flutter project.
+An application for reading the Quran with translation of the verses into Russian, and the ability to listen to the verses.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+No special actions are required to launch the project.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Flutter version:
+Flutter 3.22.3 • channel stable • https://github.com/flutter/flutter.git
+### Dart version:
+Dart SDK version: 3.4.4 (stable) (Wed Jun 12 15:54:31 2024 +0000) on "windows_x64"
