@@ -74,6 +74,11 @@ class _CurrentSurahScreenState extends State<CurrentSurahScreen> {
                       snapshot.data![index].translation,
                       style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
                     ),
+                    onTap: () {
+                      setState(() {
+                        _currentAyahIndex = index;
+                      });
+                    },
                   ),
                 );
               },
