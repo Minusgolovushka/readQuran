@@ -2,15 +2,19 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import '../../domain/models/surah.dart';
-import '../../data/quran_api_service.dart';
-import 'package:dio/dio.dart';
+import 'package:readquran/domain/repositories/quran_repository.dart';
+import '../../domain/models/ayah.dart';
 
 class CurrentSurahScreen extends StatefulWidget {
   final int number;
   final String name;
+  final QuranRepository;
 
-  const CurrentSurahScreen({super.key, required this.number, required this.name});
+  const CurrentSurahScreen({
+    super.key, 
+    required this.number, 
+    required this.name,
+    required this.QuranRepository});
 
   @override
   State<CurrentSurahScreen> createState() => _CurrentSurahScreenState();
@@ -19,7 +23,7 @@ class CurrentSurahScreen extends StatefulWidget {
 class _CurrentSurahScreenState extends State<CurrentSurahScreen> {
   late Future<List<Ayah>> ayahs;
   final player = AudioPlayer();
-  final QuranApiService quranApiService = QuranApiService(Dio());
+  late final QuranRepository quranRepository;
 
   int _currentAyahIndex = 0;
   final ValueNotifier<bool> isPlaying = ValueNotifier<bool>(false);
@@ -27,7 +31,7 @@ class _CurrentSurahScreenState extends State<CurrentSurahScreen> {
   @override
   void initState() {
     super.initState();
-    ayahs = quranApiService.fetchAyahList(widget.number);
+    ayahs = quranRepository.fetchAyahList(widget.number);
 
     player.playerStateStream.listen((state) {
       isPlaying.value = state.playing;
@@ -78,6 +82,7 @@ class _CurrentSurahScreenState extends State<CurrentSurahScreen> {
                       setState(() {
                         _currentAyahIndex = index;
                       });
+                      // !!! Реализовать возможность отображения тафсира !!!
                     },
                   ),
                 );
@@ -216,3 +221,4 @@ class _CurrentSurahScreenState extends State<CurrentSurahScreen> {
     super.dispose();
   }
 }
+
