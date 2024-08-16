@@ -17,7 +17,6 @@ class CurrentSurahScreen extends ConsumerWidget {
     final currentPosition = ref.watch(audioPlayerNotifierProvider);
     final ayahsAsyncValue = ref.watch(ayahListProvider(number));
     final currentAyahIndex = ref.watch(currentAyahIndexProvider);
-    
 
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +36,7 @@ class CurrentSurahScreen extends ConsumerWidget {
                 ),
                 elevation: 4,
                 child: ListTile(
-                  leading: Text(ayahs[index].numberInSurah.toString()),
+                  leading: Text(ayah.numberInSurah.toString()),
                   contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                   title: Text(
                     ayah.text,
@@ -67,6 +66,7 @@ class CurrentSurahScreen extends ConsumerWidget {
     final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
     final totalDuration = ref.watch(audioPlayerNotifierProvider.notifier).totalDuration ?? Duration.zero;
     final isPlaying = ref.watch(isPlayingProvider);
+    final currentAyahIndex = ref.watch(currentAyahIndexProvider);
 
     return BottomAppBar(
       height: 150,
@@ -86,19 +86,31 @@ class CurrentSurahScreen extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.skip_previous),
                 onPressed: () {
-                  // Логика для предыдущего аята
+                  if (currentAyahIndex > 0) {
+                    ref.read(currentAyahIndexProvider.notifier).state--;
+                    audioPlayerNotifier.play(ref.read(ayahListProvider(number)).value![currentAyahIndex - 1].audio);
+                  }
                 },
               ),
               IconButton(
-                icon: isPlaying == true ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
+                icon: isPlaying ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
                 onPressed: () {
-                  isPlaying == true ? audioPlayerNotifier.pause() : audioPlayerNotifier.play('');
+                  if (isPlaying) {
+                    audioPlayerNotifier.pause();
+                    ref.read(isPlayingProvider.notifier).state = false;
+                  } else {
+                    audioPlayerNotifier.play(ref.read(ayahListProvider(number)).value![currentAyahIndex].audio);
+                    ref.read(isPlayingProvider.notifier).state = true;
+                  }
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.skip_next),
                 onPressed: () {
-                  // Логика для следующего аята
+                  if (currentAyahIndex < ref.read(ayahListProvider(number)).value!.length - 1) {
+                    ref.read(currentAyahIndexProvider.notifier).state++;
+                    audioPlayerNotifier.play(ref.read(ayahListProvider(number)).value![currentAyahIndex + 1].audio);
+                  }
                 },
               ),
             ],
