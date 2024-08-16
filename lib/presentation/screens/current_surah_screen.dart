@@ -63,61 +63,70 @@ class CurrentSurahScreen extends ConsumerWidget {
   }
 
   BottomAppBar buildBottomAppBar(BuildContext context, WidgetRef ref, Duration currentPosition) {
-    final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
-    final ayahs = ref.read(ayahListProvider(number)).value ?? [];
-    final totalDuration = ref.watch(audioPlayerNotifierProvider.notifier).totalDuration ?? Duration.zero;
-    final isPlaying = ref.watch(isPlayingProvider);
-    final currentAyahIndex = ref.watch(currentAyahIndexProvider);
+  final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
+  final ayahs = ref.read(ayahListProvider(number)).value ?? [];
+  final totalDuration = ref.watch(audioPlayerNotifierProvider.notifier).totalDuration ?? Duration.zero;
+  final isPlaying = ref.watch(isPlayingProvider);
+  final currentAyahIndex = ref.watch(currentAyahIndexProvider);
 
-    return BottomAppBar(
-      height: 150,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ProgressBar(
-            progress: currentPosition,
-            total: totalDuration,
-            onSeek: (position) {
-              audioPlayerNotifier.seek(position);
-            },
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.skip_previous),
-                onPressed: () {
-                  if (currentAyahIndex > 0) {
-                    ref.read(currentAyahIndexProvider.notifier).state--;
-                    audioPlayerNotifier.play(ayahs[currentAyahIndex - 1].audio);
-                  }
-                },
-              ),
-              IconButton(
-                icon: isPlaying ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
-                onPressed: () {
-                  if (isPlaying) {
-                    audioPlayerNotifier.pause();
-                    ref.read(isPlayingProvider.notifier).state = false;
-                  } else if (ayahs.isNotEmpty) {
-                    audioPlayerNotifier.play(ayahs[currentAyahIndex].audio);
-                    ref.read(isPlayingProvider.notifier).state = true;
-                  }
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.skip_next),
-                onPressed: () {
-                  if (currentAyahIndex < ayahs.length - 1) {
-                    ref.read(currentAyahIndexProvider.notifier).state++;
-                    audioPlayerNotifier.play(ayahs[currentAyahIndex + 1].audio);
-                  }
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  ref.listen<Duration>(audioPlayerNotifierProvider, (previous, current) {
+    if (current == totalDuration && currentAyahIndex < ayahs.length - 1) {
+      // Переход к следующему аяту
+      ref.read(currentAyahIndexProvider.notifier).state++;
+      audioPlayerNotifier.play(ayahs[currentAyahIndex + 1].audio);
+    }
+  });
+
+  return BottomAppBar(
+    height: 120,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ProgressBar(
+          progress: currentPosition,
+          total: totalDuration,
+          onSeek: (position) {
+            audioPlayerNotifier.seek(position);
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.skip_previous),
+              onPressed: () {
+                if (currentAyahIndex > 0) {
+                  ref.read(currentAyahIndexProvider.notifier).state--;
+                  audioPlayerNotifier.play(ayahs[currentAyahIndex - 1].audio);
+                }
+              },
+            ),
+            IconButton(
+              icon: isPlaying ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
+              onPressed: () {
+                if (isPlaying) {
+                  audioPlayerNotifier.pause();
+                  ref.read(isPlayingProvider.notifier).state = false;
+                } else if (ayahs.isNotEmpty) {
+                  audioPlayerNotifier.play(ayahs[currentAyahIndex].audio);
+                  ref.read(isPlayingProvider.notifier).state = true;
+                }
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.skip_next),
+              onPressed: () {
+                if (currentAyahIndex < ayahs.length - 1) {
+                  ref.read(currentAyahIndexProvider.notifier).state++;
+                  audioPlayerNotifier.play(ayahs[currentAyahIndex + 1].audio);
+                }
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 }

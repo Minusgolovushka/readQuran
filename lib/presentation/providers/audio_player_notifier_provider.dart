@@ -15,6 +15,12 @@ class AudioPlayerNotifier extends StateNotifier<Duration> {
       totalDuration = duration ?? Duration.zero;
       state = state; 
     });
+
+        _audioPlayer.playerStateStream.listen((playerState) {
+      if (playerState.processingState == ProcessingState.completed) {
+        _onTrackComplete();
+      }
+    });
   }
 
   Future<void> play(String url) async {
@@ -28,6 +34,11 @@ class AudioPlayerNotifier extends StateNotifier<Duration> {
 
   void seek(Duration position) {
     _audioPlayer.seek(position);
+  }
+
+    void _onTrackComplete() {
+    // Уведомляем приложение о завершении трека
+    state = totalDuration ?? Duration.zero;
   }
 }
 
