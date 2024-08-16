@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:readquran/domain/app_router.gr.dart'; 
 import '../../domain/models/surah.dart';
 import '../../domain/providers/surah_list_provider.dart';  
-import 'current_surah_screen.dart';
 
+@RoutePage()
 class HomeScreen extends ConsumerWidget {  
   const HomeScreen({super.key});
 
@@ -14,6 +16,7 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quran App'),
+        actions: [IconButton(onPressed: () {context.router.push(const SettingsRoute());}, icon: const Icon(Icons.settings))],
       ),
       body: surahListAsyncValue.when(
         data: (surahs) {
@@ -47,12 +50,9 @@ class HomeScreen extends ConsumerWidget {
                     style: const TextStyle(fontSize: 12),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CurrentSurahScreen(
-                        number: surah.number,
-                        name: surah.name,
-                      ),
-                    ));
+                     context.pushRoute(
+                      CurrentSurahRoute(number: surah.number, name: surah.name),
+                    );
                   },
                 ),
               );

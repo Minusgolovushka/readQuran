@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:readquran/domain/providers/ayah_list_provider.dart';
@@ -5,6 +6,7 @@ import 'package:readquran/presentation/providers/audio_player_notifier_provider.
 import 'package:readquran/presentation/providers/current_surah_screen_state_provider.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
+@RoutePage()
 class CurrentSurahScreen extends ConsumerWidget {
   final int number;
   final String name;

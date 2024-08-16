@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'presentation/screens/home_screen.dart';
+import 'package:readquran/domain/app_router.dart';
 
+final appRouter  = AppRouter();
 void main(List<String> args) {
   runApp(const ProviderScope(child: MyApp()));
 } 
@@ -11,12 +12,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'ReadQuran',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      routerConfig: appRouter.config(),
     );
   }
 }

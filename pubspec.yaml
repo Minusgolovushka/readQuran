@@ -43,6 +43,8 @@ dependencies:
   rxdart: ^0.27.7
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
+  auto_route: ^9.2.0
+  auto_route_generator: ^9.0.0
 
 dev_dependencies:
   flutter_test:
