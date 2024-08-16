@@ -1,78 +1,66 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:readquran/domain/app_router.gr.dart'; 
 import '../../domain/models/surah.dart';
-import '../../data/quran_api_service.dart';
-import 'current_surah_screen.dart';
-import 'package:dio/dio.dart';
+import '../../domain/providers/surah_list_provider.dart';  
 
-class HomeScreen extends StatefulWidget {
+@RoutePage()
+class HomeScreen extends ConsumerWidget {  
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {  
+    final surahListAsyncValue = ref.watch(surahListProvider);
 
-class _HomeScreenState extends State<HomeScreen> {
-  final QuranApiService quranApiService = QuranApiService(Dio());
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quran App'),
+        actions: [IconButton(onPressed: () {context.router.push(const SettingsRoute());}, icon: const Icon(Icons.settings))],
       ),
-      body: FutureBuilder(
-        future: quranApiService.fetchSurahList(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                Surah surah = snapshot.data![index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+      body: surahListAsyncValue.when(
+        data: (surahs) {
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: surahs.length,
+            itemBuilder: (context, index) {
+              Surah surah = surahs[index];
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 4,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                  leading: Text(
+                    surah.number.toString(),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
                   ),
-                  elevation: 4,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-                    leading: 
-                      Text(
-                        surah.number.toString(),
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                      ),
-                    title: Text(
-                      surah.name,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      surah.englishName,
-                      style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-                    ),
-                    trailing: Text(
-                      surah.revelationType,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => CurrentSurahScreen(
-                          QuranRepository: quranApiService,
-                          number: surah.number,
-                          name: surah.name,
-                        ),
-                      ));
-                    },
+                  title: Text(
+                    surah.name,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                );
-              },
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+                  subtitle: Text(
+                    surah.englishName,
+                    style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                  ),
+                  trailing: Text(
+                    surah.revelationType,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  onTap: () {
+                     context.pushRoute(
+                      CurrentSurahRoute(number: surah.number, name: surah.name),
+                    );
+                  },
+                ),
+              );
+            },
+          );
         },
+        loading: () => const Center(child: CircularProgressIndicator()),  
+        error: (error, stack) => Center(child: Text('Error: $error')),  
       ),
     );
   }
