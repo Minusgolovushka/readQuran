@@ -1,224 +1,110 @@
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:readquran/domain/repositories/quran_repository.dart';
-import '../../domain/models/ayah.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:readquran/domain/providers/ayah_list_provider.dart';
+import 'package:readquran/presentation/providers/audio_player_notifier_provider.dart';
+import 'package:readquran/presentation/providers/current_surah_screen_state_provider.dart';
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
-class CurrentSurahScreen extends StatefulWidget {
+class CurrentSurahScreen extends ConsumerWidget {
   final int number;
   final String name;
-  final QuranRepository;
 
-  const CurrentSurahScreen({
-    super.key, 
-    required this.number, 
-    required this.name,
-    required this.QuranRepository});
+  const CurrentSurahScreen({super.key, required this.number, required this.name});
 
   @override
-  State<CurrentSurahScreen> createState() => _CurrentSurahScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
+    final currentPosition = ref.watch(audioPlayerNotifierProvider);
+    final ayahsAsyncValue = ref.watch(ayahListProvider(number));
+    final currentAyahIndex = ref.watch(currentAyahIndexProvider);
+    
 
-class _CurrentSurahScreenState extends State<CurrentSurahScreen> {
-  late Future<List<Ayah>> ayahs;
-  final player = AudioPlayer();
-  late final QuranRepository quranRepository;
-
-  int _currentAyahIndex = 0;
-  final ValueNotifier<bool> isPlaying = ValueNotifier<bool>(false);
-
-  @override
-  void initState() {
-    super.initState();
-    ayahs = quranRepository.fetchAyahList(widget.number);
-
-    player.playerStateStream.listen((state) {
-      isPlaying.value = state.playing;
-      if (state.processingState == ProcessingState.completed) {
-        _playNextAyah();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name),
+        title: Text(name),
       ),
-      body: FutureBuilder<List<Ayah>>(
-        future: ayahs,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+      body: ayahsAsyncValue.when(
+        data: (ayahs) {
+          return ListView.builder(
+            itemCount: ayahs.length,
+            itemBuilder: (context, index) {
+              final ayah = ayahs[index];
+              return Card(
+                color: index == currentAyahIndex ? Colors.green[50] : Colors.white,
+                margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 4,
+                child: ListTile(
+                  leading: Text(ayahs[index].numberInSurah.toString()),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                  title: Text(
+                    ayah.text,
+                    style: const TextStyle(fontSize: 24),
                   ),
-                  elevation: 4,
-                  color: _currentAyahIndex == index ? Colors.blue[100] : null, 
-                  child: ListTile(
-                    titleAlignment: ListTileTitleAlignment.titleHeight,
-                    minLeadingWidth: 20,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 5.0),
-                    leading: 
-                      Text(
-                        snapshot.data![index].numberInSurah.toString(),
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    title: Text(
-                      snapshot.data![index].text,
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                    subtitle: Text(
-                      snapshot.data![index].translation,
-                      style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-                    ),
-                    onTap: () {
-                      setState(() {
-                        _currentAyahIndex = index;
-                      });
-                      // !!! Реализовать возможность отображения тафсира !!!
-                    },
+                  subtitle: Text(
+                    ayah.translation,
+                    style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
                   ),
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+                  onTap: () async {
+                    ref.read(currentAyahIndexProvider.notifier).state = index;
+                    await audioPlayerNotifier.play(ayah.audio);
+                  },
+                ),
+              );
+            },
+          );
         },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
       ),
-      bottomNavigationBar: buildBottomAppBar(context),
+      bottomNavigationBar: buildBottomAppBar(context, ref, currentPosition),
     );
   }
 
-  BottomAppBar buildBottomAppBar(BuildContext context) {
+  BottomAppBar buildBottomAppBar(BuildContext context, WidgetRef ref, Duration currentPosition) {
+    final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
+    final totalDuration = ref.watch(audioPlayerNotifierProvider.notifier).totalDuration ?? Duration.zero;
+    final isPlaying = ref.watch(isPlayingProvider);
+
     return BottomAppBar(
-      height: 120,
-      child: FutureBuilder<List<Ayah>>(
-        future: ayahs,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.skip_previous),
-                      onPressed: _playPreviousAyah,
-                    ),
-                    ValueListenableBuilder<bool>(
-                      valueListenable: isPlaying,
-                      builder: (context, playing, _) {
-                        return IconButton(
-                          icon: Icon(playing ? Icons.pause : Icons.play_arrow),
-                          onPressed: () {
-                            if (playing) {
-                              _pauseAudio();
-                            } else {
-                              _playCurrentAyah();
-                            }
-                          },
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.skip_next),
-                      onPressed: _playNextAyah,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: StreamBuilder<Duration>(
-                        stream: player.positionStream,
-                        builder: (context, snapshot) {
-                          final position = snapshot.data ?? Duration.zero;
-                          final total = player.duration ?? Duration.zero;
-                          return ProgressBar(
-                            progress: position,
-                            total: total,
-                            onSeek: (duration) {
-                              player.seek(duration);
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+      height: 150,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ProgressBar(
+            progress: currentPosition,
+            total: totalDuration,
+            onSeek: (position) {
+              audioPlayerNotifier.seek(position);
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.skip_previous),
+                onPressed: () {
+                  // Логика для предыдущего аята
+                },
+              ),
+              IconButton(
+                icon: isPlaying == true ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
+                onPressed: () {
+                  isPlaying == true ? audioPlayerNotifier.pause() : audioPlayerNotifier.play('');
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.skip_next),
+                onPressed: () {
+                  // Логика для следующего аята
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     );
-  }
-
-  Future<void> _playCurrentAyah() async {
-    final ayah = await ayahs;
-    final audioUrl = ayah[_currentAyahIndex].audio;
-
-    try {
-      await player.setUrl(audioUrl);
-      player.play();
-    } catch (e) {
-      if (kDebugMode) {
-        print('Failed to play audio: $e');
-      }
-    }
-  }
-
-    Future<void> _playNextAyah() async {
-    final ayah = await ayahs;
-    if (_currentAyahIndex < ayah.length - 1) {
-      setState(() { 
-        _currentAyahIndex++;
-      });
-      await _playCurrentAyah();
-    }
-  }
-
-  Future<void> _playPreviousAyah() async {
-    if (_currentAyahIndex > 0) {
-      setState(() { 
-        _currentAyahIndex--;
-      });
-      await _playCurrentAyah();
-    }
-  }
-
-  Future<void> _pauseAudio() async {
-    try {
-      await player.pause();
-    } catch (e) {
-      if (kDebugMode) {
-        print('Failed to pause audio: $e');
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    isPlaying.dispose();
-    player.dispose();
-    super.dispose();
   }
 }
-

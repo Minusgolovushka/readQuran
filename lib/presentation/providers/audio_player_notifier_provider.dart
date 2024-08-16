@@ -1,0 +1,38 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:readquran/domain/providers/audio_player_provider.dart';
+
+class AudioPlayerNotifier extends StateNotifier<Duration> {
+  final AudioPlayer _audioPlayer;
+  Duration? totalDuration;
+
+  AudioPlayerNotifier(this._audioPlayer) : super(Duration.zero) {
+    _audioPlayer.positionStream.listen((position) {
+      state = position;
+    });
+
+    _audioPlayer.durationStream.listen((duration) {
+      totalDuration = duration ?? Duration.zero;
+      state = state; 
+    });
+  }
+
+  Future<void> play(String url) async {
+    await _audioPlayer.setUrl(url);
+    _audioPlayer.play();
+  }
+
+  void pause() {
+    _audioPlayer.pause();
+  }
+
+  void seek(Duration position) {
+    _audioPlayer.seek(position);
+  }
+}
+
+final audioPlayerNotifierProvider =
+    StateNotifierProvider<AudioPlayerNotifier, Duration>((ref) {
+  final player = ref.watch(audioPlayerProvider);
+  return AudioPlayerNotifier(player);
+});
