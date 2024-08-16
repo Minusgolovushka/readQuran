@@ -64,6 +64,7 @@ class CurrentSurahScreen extends ConsumerWidget {
 
   BottomAppBar buildBottomAppBar(BuildContext context, WidgetRef ref, Duration currentPosition) {
     final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
+    final ayahs = ref.read(ayahListProvider(number)).value ?? [];
     final totalDuration = ref.watch(audioPlayerNotifierProvider.notifier).totalDuration ?? Duration.zero;
     final isPlaying = ref.watch(isPlayingProvider);
     final currentAyahIndex = ref.watch(currentAyahIndexProvider);
@@ -88,7 +89,7 @@ class CurrentSurahScreen extends ConsumerWidget {
                 onPressed: () {
                   if (currentAyahIndex > 0) {
                     ref.read(currentAyahIndexProvider.notifier).state--;
-                    audioPlayerNotifier.play(ref.read(ayahListProvider(number)).value![currentAyahIndex - 1].audio);
+                    audioPlayerNotifier.play(ayahs[currentAyahIndex - 1].audio);
                   }
                 },
               ),
@@ -98,8 +99,8 @@ class CurrentSurahScreen extends ConsumerWidget {
                   if (isPlaying) {
                     audioPlayerNotifier.pause();
                     ref.read(isPlayingProvider.notifier).state = false;
-                  } else {
-                    audioPlayerNotifier.play(ref.read(ayahListProvider(number)).value![currentAyahIndex].audio);
+                  } else if (ayahs.isNotEmpty) {
+                    audioPlayerNotifier.play(ayahs[currentAyahIndex].audio);
                     ref.read(isPlayingProvider.notifier).state = true;
                   }
                 },
@@ -107,9 +108,9 @@ class CurrentSurahScreen extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.skip_next),
                 onPressed: () {
-                  if (currentAyahIndex < ref.read(ayahListProvider(number)).value!.length - 1) {
+                  if (currentAyahIndex < ayahs.length - 1) {
                     ref.read(currentAyahIndexProvider.notifier).state++;
-                    audioPlayerNotifier.play(ref.read(ayahListProvider(number)).value![currentAyahIndex + 1].audio);
+                    audioPlayerNotifier.play(ayahs[currentAyahIndex + 1].audio);
                   }
                 },
               ),
