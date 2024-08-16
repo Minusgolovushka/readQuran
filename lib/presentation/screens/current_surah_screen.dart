@@ -13,7 +13,6 @@ class CurrentSurahScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
     final currentPosition = ref.watch(audioPlayerNotifierProvider);
     final ayahsAsyncValue = ref.watch(ayahListProvider(number));
     final currentAyahIndex = ref.watch(currentAyahIndexProvider);
@@ -48,7 +47,6 @@ class CurrentSurahScreen extends ConsumerWidget {
                   ),
                   onTap: () async {
                     ref.read(currentAyahIndexProvider.notifier).state = index;
-                    await audioPlayerNotifier.play(ayah.audio);
                   },
                 ),
               );
