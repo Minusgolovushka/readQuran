@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:readquran/domain/cache_manager.dart';
 import 'package:readquran/domain/providers/audio_player_provider.dart';
 
 class AudioPlayerNotifier extends StateNotifier<Duration> {
@@ -24,7 +25,8 @@ class AudioPlayerNotifier extends StateNotifier<Duration> {
   }
 
   Future<void> play(String url) async {
-    await _audioPlayer.setUrl(url);
+    final file = await QuranCacheManager().downloadFile(url);
+    await _audioPlayer.setUrl(file.path);
     _audioPlayer.play();
   }
 
@@ -37,7 +39,6 @@ class AudioPlayerNotifier extends StateNotifier<Duration> {
   }
 
     void _onTrackComplete() {
-    // Уведомляем приложение о завершении трека
     state = totalDuration ?? Duration.zero;
   }
 }

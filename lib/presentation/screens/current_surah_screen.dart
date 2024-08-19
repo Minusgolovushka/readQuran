@@ -18,6 +18,7 @@ class CurrentSurahScreen extends ConsumerWidget {
     final currentPosition = ref.watch(audioPlayerNotifierProvider);
     final ayahsAsyncValue = ref.watch(ayahListProvider(number));
     final currentAyahIndex = ref.watch(currentAyahIndexProvider);
+    final scontroller = ScrollController();
 
     return Scaffold(
       appBar: AppBar(
@@ -26,6 +27,7 @@ class CurrentSurahScreen extends ConsumerWidget {
       body: ayahsAsyncValue.when(
         data: (ayahs) {
           return ListView.builder(
+            controller: scontroller,
             itemCount: ayahs.length,
             itemBuilder: (context, index) {
               final ayah = ayahs[index];
@@ -41,11 +43,11 @@ class CurrentSurahScreen extends ConsumerWidget {
                   contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                   title: Text(
                     ayah.text,
-                    style: const TextStyle(fontSize: 24),
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   subtitle: Text(
                     ayah.translation,
-                    style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   onTap: () async {
                     ref.read(currentAyahIndexProvider.notifier).state = index;
@@ -71,7 +73,6 @@ class CurrentSurahScreen extends ConsumerWidget {
 
   ref.listen<Duration>(audioPlayerNotifierProvider, (previous, current) {
     if (current == totalDuration && currentAyahIndex < ayahs.length - 1) {
-      // Переход к следующему аяту
       ref.read(currentAyahIndexProvider.notifier).state++;
       audioPlayerNotifier.play(ayahs[currentAyahIndex + 1].audio);
     }
