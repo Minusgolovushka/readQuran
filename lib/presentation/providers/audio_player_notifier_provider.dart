@@ -25,8 +25,11 @@ class AudioPlayerNotifier extends StateNotifier<Duration> {
   }
 
   Future<void> play(String url) async {
+    await _audioPlayer.setUrl(url);
     final file = await QuranCacheManager().downloadFile(url);
-    await _audioPlayer.setUrl(file.path);
+    if (file.path.isNotEmpty) {
+      await _audioPlayer.setFilePath(file.path);
+    }
     _audioPlayer.play();
   }
 
