@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import '../domain/models/surah.dart';
-import '../domain/models/ayah.dart';
-import '../domain/repositories/quran_repository.dart';
+import 'package:readquran/domain/models/surah.dart';
+import 'package:readquran/domain/models/ayah.dart';
+import 'package:readquran/domain/repositories/quran_repository.dart';
 
 class QuranApiService implements QuranRepository {
   final String _baseUrl = "https://api.alquran.cloud/v1/";

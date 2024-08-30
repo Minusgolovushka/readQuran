@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:readquran/domain/cache_manager.dart';
 import 'package:readquran/domain/providers/audio_player_provider.dart';
+import 'package:readquran/domain/providers/cache_manager_provider.dart';
 
 class AudioPlayerNotifier extends StateNotifier<Duration> {
   final AudioPlayer _audioPlayer;
@@ -24,9 +24,9 @@ class AudioPlayerNotifier extends StateNotifier<Duration> {
     });
   }
 
-  Future<void> play(String url) async {
+  Future<void> play(String url, WidgetRef ref) async {
     await _audioPlayer.setUrl(url);
-    final file = await QuranCacheManager().downloadFile(url);
+    final file = await ref.read(cacheManagerProvider).downloadFile(url);
     if (file.path.isNotEmpty) {
       await _audioPlayer.setFilePath(file.path);
     }
@@ -47,7 +47,10 @@ class AudioPlayerNotifier extends StateNotifier<Duration> {
 }
 
 final audioPlayerNotifierProvider =
-    StateNotifierProvider<AudioPlayerNotifier, Duration>((ref) {
+  StateNotifierProvider<AudioPlayerNotifier, Duration>((ref) {
   final player = ref.watch(audioPlayerProvider);
+ // final cacheManager = ref.read(cacheManagerProvider);
   return AudioPlayerNotifier(player);
 });
+
+final isPlayingProvider = StateProvider<bool>((ref) => false);
