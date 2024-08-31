@@ -6,6 +6,7 @@ import 'package:readquran/domain/providers/theme_notifier.dart';
 @RoutePage()
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -14,22 +15,23 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(shape: const CircleBorder()),
-                  onPressed: () {ref.read(themeProvider.notifier).setTheme(ThemeMode.light);}, 
-                  child: const Icon(Icons.sunny)
-                ),
-                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(shape: const CircleBorder()),
-                  onPressed: () {ref.read(themeProvider.notifier).setTheme(ThemeMode.dark);}, 
-                  child: const Icon(Icons.monochrome_photos)
-                ),
-              ],
-            )
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Theme', style: Theme.of(context).textTheme.titleLarge),
+                  Switch(
+                    thumbIcon: WidgetStateProperty.all(Icon(Theme.of(context).brightness == Brightness.dark ? Icons.dark_mode : Icons.light_mode)),
+                    activeColor: Theme.of(context).primaryColorLight,
+                    value: ref.watch(themeProvider) == ThemeMode.dark, 
+                    onChanged: (bool value) {ref.read(themeProvider.notifier).setTheme( value ? ThemeMode.dark : ThemeMode.light);},
+                  ),
+                ],
+              )
+            ),
           ],
         ),
       ),

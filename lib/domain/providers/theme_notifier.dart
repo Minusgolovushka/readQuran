@@ -13,41 +13,37 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
   Future<void> loadTheme() async {
     final box = await Hive.openBox(themeBoxName);
     final storedTheme = box.get(_themeKey, defaultValue: 'System');
-    state = ThemeMode.values[storedTheme];
 
     switch (storedTheme) {
       case 'Light':
-        ThemeMode.light;
+        state = ThemeMode.light;
         break;
       case 'Dark':
-        ThemeMode.dark;
+        state = ThemeMode.dark;
         break;
       case 'System':
-        ThemeMode.system;
-        break;
       default:
-        ThemeMode.system;
+        state = ThemeMode.system;
         break;
     }
   }
 
   Future<void> setTheme(ThemeMode themeMode) async {
     state = themeMode;
+
     final box = await Hive.openBox(themeBoxName);
     String themeString;
 
     if (themeMode == ThemeMode.light) {
       themeString = 'Light';
-    }else if(themeMode == ThemeMode.dark){
+    } else if (themeMode == ThemeMode.dark) {
       themeString = 'Dark';
-    }else{
+    } else {
       themeString = 'System';
     }
 
     await box.put(_themeKey, themeString);
-
   }
-
 }
 
 final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref){

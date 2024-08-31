@@ -30,9 +30,7 @@ class AudioBottomBar extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ProgressBar(
-            progressBarColor: Theme.of(context).primaryColor,
-            thumbColor: Theme.of(context).primaryColor,
+          ProgressBar(            
             thumbRadius: 5.0,
             timeLabelTextStyle: TextStyle(
               color: Theme.of(context).primaryColor,
