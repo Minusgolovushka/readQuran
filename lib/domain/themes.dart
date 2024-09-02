@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:readquran/domain/colors.dart';
 const TextTheme baseTextTheme = TextTheme(
     titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-    bodyLarge: TextStyle(fontSize: 24),
+    bodyLarge: TextStyle(fontSize: 24, fontFamily: 'amiri', height: 2),
     bodyMedium: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
     bodySmall: TextStyle(fontSize: 12),
   );
@@ -10,9 +10,8 @@ const TextTheme baseTextTheme = TextTheme(
 final ThemeData lightTheme = ThemeData(
   primarySwatch: Colors.blue,
   colorScheme: const ColorScheme.light(
-    primary: Color.fromARGB(255, 12, 75, 23),
-    secondary: Color.fromARGB(255, 236, 248, 238),
-   // surface: Color.fromARGB(255, 236, 248, 238),
+    primary: lightPrimaryColor,
+    secondary: lightSecondaryColor,
   ),
   brightness: Brightness.light,
   textTheme: baseTextTheme,

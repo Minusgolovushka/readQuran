@@ -36,7 +36,7 @@ class CurrentSurahScreenState extends ConsumerState<CurrentSurahScreen> {
   @override
   Widget build(BuildContext context) {
     final ayahs = ref.watch(ayahListNotifierProvider);
-
+    debugPrint(Theme.of(context).textTheme.bodyLarge?.fontFamily);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.name),
@@ -92,3 +92,4 @@ class CurrentSurahScreenState extends ConsumerState<CurrentSurahScreen> {
     );
   }
 }
+
