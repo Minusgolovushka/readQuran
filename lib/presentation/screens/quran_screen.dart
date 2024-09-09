@@ -6,14 +6,14 @@ import 'package:readquran/domain/models/surah.dart';
 import 'package:readquran/domain/providers/surah_list_notifier.dart';
 
 @RoutePage()
-class HomeScreen extends ConsumerStatefulWidget {  
-  const HomeScreen({super.key});
+class QuranScreen extends ConsumerStatefulWidget {  
+  const QuranScreen({super.key});
 
   @override
-  HomeScreenState createState() => HomeScreenState();
+  QuranScreenState createState() => QuranScreenState();
 }
 
-class HomeScreenState extends ConsumerState<HomeScreen> {
+class QuranScreenState extends ConsumerState<QuranScreen> {
   @override
   void initState() {
     super.initState();

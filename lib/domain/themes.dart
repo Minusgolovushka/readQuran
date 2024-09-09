@@ -15,18 +15,21 @@ final ThemeData lightTheme = ThemeData(
   ),
   brightness: Brightness.light,
   textTheme: baseTextTheme,
+  cardTheme: const CardTheme(
+    color: lightCardColor
+  ),
 );
 
 final ThemeData darkTheme = ThemeData(
   primarySwatch: Colors.blueGrey,
   colorScheme: const ColorScheme.dark(
-    primary: Color.fromARGB(255, 148, 148, 148),
-    secondary: Color.fromARGB(255, 29, 29, 29),
-    onSurface: Color.fromARGB(255, 201, 201, 201),
+    primary: darkPrimaryColor,
+    secondary: darkSecondaryColor,
+    onSurface: darkOnSurfaceColor,
   ),
   brightness: Brightness.dark,
   textTheme: baseTextTheme,
   cardTheme: const CardTheme(
-    color: Color.fromARGB(255, 31, 31, 31),
+    color: darkCardColor
   ),
 );

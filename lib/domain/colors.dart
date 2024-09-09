@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 //LightThemeColors
 const Color lightPrimaryColor = Color.fromARGB(255, 12, 75, 23);
 const Color lightSecondaryColor = Color.fromARGB(255, 236, 248, 238);
+const Color lightOnSurfaceColor = Color.fromARGB(255, 201, 201, 201);
+const Color lightCardColor = Color.fromARGB(255, 255, 255, 255);
 
 
 //DarkThemeColors
