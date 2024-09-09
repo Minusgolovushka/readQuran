@@ -40,14 +40,26 @@ class HomePageState extends ConsumerState<HomePage> {
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       splashColor: Theme.of(context).cardColor,
-                      onTap: () {context.router.push(const QuranRoute());},
-                      child: const SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Center(
-                          child: Text('Surahs'),
+                      onTap: () {
+                        context.router.push(const QuranRoute());
+                      },
+                      child: SizedBox(
+                        width: 150,
+                        height: 150,
+                        child: DecoratedBox(
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/VotyGPT.jpg"),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Surahs', style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
                         ),
-                      )
+                      ),
                     ),
                   )
                 ]
