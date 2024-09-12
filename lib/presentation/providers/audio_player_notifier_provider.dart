@@ -25,10 +25,11 @@ class AudioPlayerNotifier extends StateNotifier<Duration> {
   }
 
   Future<void> play(String url, WidgetRef ref) async {
-    await _audioPlayer.setUrl(url);
     final file = await ref.read(cacheManagerProvider).downloadFile(url);
     if (file.path.isNotEmpty) {
       await _audioPlayer.setFilePath(file.path);
+    }else{
+      await _audioPlayer.setUrl(url);
     }
     _audioPlayer.play();
   }

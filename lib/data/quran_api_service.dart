@@ -20,7 +20,7 @@ class QuranApiService implements QuranRepository {
   Future<List<Ayah>> fetchAyahList(int surahNumber) async {
     final responseArabic = await _dio.get('${_baseUrl}surah/$surahNumber');
     final responseRussian = await _dio.get('${_baseUrl}surah/$surahNumber/ru.kuliev');
-    final responseAudio = await _dio.get('${_baseUrl}surah/$surahNumber/ar.alafasy');
+    final responseAudio = await _dio.get('${_baseUrl}surah/$surahNumber/ar.abdullahbasfar');
 
     List<Ayah> arabicAyahs = (responseArabic.data['data']['ayahs'] as List).map((json) => Ayah.fromJson(json)).toList();
     List<Ayah> russianAyahs = (responseRussian.data['data']['ayahs'] as List).map((json) => Ayah.fromJson(json)).toList();

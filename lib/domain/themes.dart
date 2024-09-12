@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:readquran/domain/colors.dart';
+
 const TextTheme baseTextTheme = TextTheme(
     titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
     bodyLarge: TextStyle(fontSize: 24, fontFamily: 'amiri', height: 2),

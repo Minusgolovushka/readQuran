@@ -24,6 +24,7 @@ class CurrentSurahScreenState extends ConsumerState<CurrentSurahScreen> {
   void initState() {
     super.initState();
     scontroller = ScrollController();
+    ref.read(currentAyahIndexNotifierProvider.notifier).resetAyahIndex();
     ref.read(ayahListNotifierProvider.notifier).fetchAyahs(widget.number);
   }
 
@@ -61,7 +62,7 @@ class CurrentSurahScreenState extends ConsumerState<CurrentSurahScreen> {
           itemCount: ayahs.length,
           itemBuilder: (context, index) {
             final ayah = ayahs[index];
-            final currentAyahIndex = ref.watch(currentAyahIndexProvider);
+            final currentAyahIndex = ref.watch(currentAyahIndexNotifierProvider);
             return Card(
               color: index == currentAyahIndex ? Theme.of(context).colorScheme.secondary : Theme.of(context).cardColor,
               margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
@@ -81,7 +82,7 @@ class CurrentSurahScreenState extends ConsumerState<CurrentSurahScreen> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 onTap: () async {
-                  ref.read(currentAyahIndexProvider.notifier).state = index;
+                  ref.read(currentAyahIndexNotifierProvider.notifier).setAyahIndex(index);
                 },
               ),
             );

@@ -15,12 +15,12 @@ class AudioBottomBar extends ConsumerWidget {
     final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
     final ayahs = ref.watch(ayahListNotifierProvider);
     final totalDuration = audioPlayerNotifier.totalDuration ?? Duration.zero;
-    final currentAyahIndex = ref.watch(currentAyahIndexProvider);
+    final currentAyahIndex = ref.watch(currentAyahIndexNotifierProvider);
     final isPlaying = ref.watch(isPlayingProvider);
 
     ref.listen<Duration>(audioPlayerNotifierProvider, (previous, current) {
       if (current == totalDuration && currentAyahIndex < ayahs.length - 1) {
-        ref.read(currentAyahIndexProvider.notifier).state++;
+        ref.read(currentAyahIndexNotifierProvider.notifier).state++;
         audioPlayerNotifier.play(ayahs[currentAyahIndex + 1].audio, ref);
       }
     });
@@ -49,7 +49,7 @@ class AudioBottomBar extends ConsumerWidget {
                 icon: const Icon(Icons.skip_previous),
                 onPressed: () {
                   if (currentAyahIndex > 0) {
-                    ref.read(currentAyahIndexProvider.notifier).state--;
+                    ref.read(currentAyahIndexNotifierProvider.notifier).state--;
                     audioPlayerNotifier.play(ayahs[currentAyahIndex - 1].audio, ref);
                   }
                 },
@@ -70,7 +70,7 @@ class AudioBottomBar extends ConsumerWidget {
                 icon: const Icon(Icons.skip_next),
                 onPressed: () {
                   if (currentAyahIndex < ayahs.length - 1) {
-                    ref.read(currentAyahIndexProvider.notifier).state++;
+                    ref.read(currentAyahIndexNotifierProvider.notifier).state++;
                     audioPlayerNotifier.play(ayahs[currentAyahIndex + 1].audio, ref);
                   }
                 },
