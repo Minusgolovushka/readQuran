@@ -11,6 +11,7 @@ void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('settingsBox');
+  await Hive.openBox('processBox');
   runApp(const ProviderScope(child: MyApp()));
 } 
 

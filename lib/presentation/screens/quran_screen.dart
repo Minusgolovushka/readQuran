@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:readquran/domain/app_router.gr.dart';
 import 'package:readquran/domain/models/surah.dart';
 import 'package:readquran/domain/providers/surah_list_notifier.dart';
+import 'package:readquran/presentation/widgets/bottom_nav_bar.dart';
 
 @RoutePage()
-class QuranScreen extends ConsumerStatefulWidget {  
+class QuranScreen extends ConsumerStatefulWidget {
   const QuranScreen({super.key});
 
   @override
@@ -17,37 +18,41 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(surahListNitifierProvider.notifier).fetchSurahs();
+    ref.read(surahListNotifierProvider.notifier).fetchSurahs();
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
+  Widget build(BuildContext context) {
+    // Получаем доступ к состоянию через surahState.surahs
+    final surahState = ref.watch(surahListNotifierProvider);
+    final surahListNotifier = ref.read(surahListNotifierProvider.notifier);
 
-  @override
-  Widget build(BuildContext context) {  
-  final surahs = ref.watch(surahListNitifierProvider);
-
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text('Quran App'),
-      actions: [
-        IconButton(
-          onPressed: () async {ref.read(surahListNitifierProvider.notifier).fetchSurahs();},
-          icon: const Icon(Icons.refresh) 
-        ),
-        IconButton(
-          onPressed: () {context.router.push(const SettingsRoute());}, 
-          icon: const Icon(Icons.settings)),
-      ],
-    ),
-    body: Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quran App'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              surahListNotifier.fetchSurahs();
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+          IconButton(
+            onPressed: () {
+              context.router.push(const SettingsRoute());
+            },
+            icon: const Icon(Icons.settings),
+          ),
+        ],
+      ),
+      body: Center(
         child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: surahs.length,
+          itemCount: surahState.surahs.length,
           itemBuilder: (context, index) {
-            Surah surah = surahs[index];
+            Surah surah = surahState.surahs[index];
+            bool isLearned = surahListNotifier.isLearned(surah.number);
+            bool isInProgress = surahListNotifier.isInProgress(surah.number);
+
             return Card(
               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               shape: RoundedRectangleBorder(
@@ -68,21 +73,35 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
                   surah.englishName,
                   style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
                 ),
-                trailing: Text(
-                  surah.revelationType,
-                  style: const TextStyle(fontSize: 12),
+                trailing: SizedBox(
+                  width: 100,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(isLearned ? Icons.bookmark : Icons.bookmark_add_outlined),
+                        onPressed: () {
+                          surahListNotifier.toggleLearnedSurah(surah.number);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(isInProgress ? Icons.timelapse : Icons.timelapse_outlined),
+                        onPressed: () {
+                          surahListNotifier.toggleInProgressSurah(surah.number);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 onTap: () {
-                    context.pushRoute(
-                    CurrentSurahRoute(number: surah.number, name: surah.name),
-                  );
+                  context.pushRoute(
+                      CurrentSurahRoute(number: surah.number, name: surah.name));
                 },
               ),
             );
           },
         ),
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
-

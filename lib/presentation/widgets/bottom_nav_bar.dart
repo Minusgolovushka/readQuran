@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:readquran/domain/app_router.gr.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -17,15 +19,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
         children: [
           IconButton(
             icon: const Icon(Icons.home),
-            onPressed: () {},
+            onPressed: () { context.router.push(const QuranRoute()); },
           ),
           IconButton(
             icon: const Icon(Icons.timelapse),
-            onPressed: () {},
+            onPressed: () { context.router.push(const InProgressSurahsRoute()); },
           ),
           IconButton(
             icon: const Icon(Icons.bookmark),
-            onPressed: () {},
+            onPressed: () { context.router.push(const LearnedSurahsRoute()); },
           ),
         ],
       ),
