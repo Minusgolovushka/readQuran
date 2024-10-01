@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:readquran/domain/providers/surah_list_notifier.dart';
+import 'package:readquran/presentation/widgets/bottom_nav_bar.dart';
 
 @RoutePage()
 class InProgressSurahsScreen extends ConsumerWidget {
@@ -9,7 +10,6 @@ class InProgressSurahsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Получаем текущее состояние
     final surahState = ref.watch(surahListNotifierProvider);
     final inProgressSurahs = surahState.inProgressSurahs;
 
@@ -20,7 +20,6 @@ class InProgressSurahsScreen extends ConsumerWidget {
           : ListView.builder(
               itemCount: inProgressSurahs.length,
               itemBuilder: (context, index) {
-                // Доступ к элементам списка сур через surahState.surahs
                 final surah = surahState.surahs.firstWhere(
                   (s) => s.number == inProgressSurahs[index],
                 );
@@ -30,6 +29,7 @@ class InProgressSurahsScreen extends ConsumerWidget {
                 );
               },
             ),
+             bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

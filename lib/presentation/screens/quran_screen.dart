@@ -23,7 +23,6 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Получаем доступ к состоянию через surahState.surahs
     final surahState = ref.watch(surahListNotifierProvider);
     final surahListNotifier = ref.read(surahListNotifierProvider.notifier);
 
@@ -31,6 +30,12 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
       appBar: AppBar(
         title: const Text('Quran App'),
         actions: [
+          IconButton(
+            onPressed: () {
+              context.router.push(const HomeRoute());
+            },
+            icon: const Icon(Icons.home_outlined),
+          ),
           IconButton(
             onPressed: () async {
               surahListNotifier.fetchSurahs();
@@ -41,7 +46,7 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
             onPressed: () {
               context.router.push(const SettingsRoute());
             },
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings_outlined),
           ),
         ],
       ),
@@ -84,7 +89,7 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
                         },
                       ),
                       IconButton(
-                        icon: Icon(isInProgress ? Icons.timelapse : Icons.timelapse_outlined),
+                        icon: Icon(isInProgress ? Icons.timelapse : Icons.timer_outlined),
                         onPressed: () {
                           surahListNotifier.toggleInProgressSurah(surah.number);
                         },
