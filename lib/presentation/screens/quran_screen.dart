@@ -68,15 +68,15 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                 leading: Text(
                   surah.number.toString(),
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 title: Text(
                   surah.name,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 subtitle: Text(
                   surah.englishName,
-                  style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 trailing: SizedBox(
                   width: 100,
