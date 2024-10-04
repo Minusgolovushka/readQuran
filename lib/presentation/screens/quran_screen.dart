@@ -28,7 +28,7 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quran App'),
+        title: const Text('Коран'),
         actions: [
           IconButton(
             onPressed: () {

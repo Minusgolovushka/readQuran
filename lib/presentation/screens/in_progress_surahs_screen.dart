@@ -15,7 +15,12 @@ class InProgressSurahsScreen extends ConsumerWidget {
     final inProgressSurahs = surahState.inProgressSurahs;
     final surahListNotifier = ref.read(surahListNotifierProvider.notifier);
     return Scaffold(
-      appBar: AppBar(title: Text('In Progress Surahs: ${surahState.inProgressSurahs.length}')),
+      appBar: AppBar(
+        title: RichText(text: TextSpan(children: [
+          TextSpan(text: 'В процессе изучения: ', style: Theme.of(context).textTheme.titleLarge),
+          TextSpan(text: inProgressSurahs.length.toString(), style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).primaryColor)),
+        ])) 
+      ),
       body: inProgressSurahs.isEmpty
           ? const Center(child: Text('Нет сур в процессе.'))
           : ListView.builder(
@@ -25,12 +30,14 @@ class InProgressSurahsScreen extends ConsumerWidget {
                   (s) => s.number == inProgressSurahs[index],
                 );
                 return Card(
-                margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
+                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
                 ),
+                elevation: 4,
                 child:  
                   ListTile(
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                   leading: Text(surah.number.toString(), style: Theme.of(context).textTheme.titleMedium,),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete_outline),

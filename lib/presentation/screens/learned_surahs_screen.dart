@@ -15,7 +15,12 @@ class LearnedSurahsScreen extends ConsumerWidget {
     final learnedSurahs = surahState.learnedSurahs;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Learned Surahs: ${surahState.learnedSurahs.length}')),
+        appBar: AppBar(
+        title: RichText(text: TextSpan(children: [
+          TextSpan(text: 'Изучено: ', style: Theme.of(context).textTheme.titleLarge),
+          TextSpan(text: learnedSurahs.length.toString(), style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).primaryColor)),
+        ])) 
+      ),
       body: learnedSurahs.isEmpty
           ? const Center(child: Text('Нет изученных сур.'))
           : ListView.builder(
@@ -25,11 +30,13 @@ class LearnedSurahsScreen extends ConsumerWidget {
                   (s) => s.number == learnedSurahs[index],
                 );
                 return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
+                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  elevation: 4,
                   child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                     leading: Text(surah.number.toString(), style: Theme.of(context).textTheme.titleMedium,),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete_outline),
