@@ -44,7 +44,7 @@ class HomePageState extends ConsumerState<HomePage> {
                   CategoryCard(
                     imagePath: "assets/images/islam_svitok-100.jpg",
                     label: 'Хадисы',
-                    onTap: () => context.router.push(const QuranRoute()),
+                    onTap: () => context.router.push(const HadithRoute()),
                   ),
                 ],
               ),
@@ -54,12 +54,12 @@ class HomePageState extends ConsumerState<HomePage> {
                   CategoryCard(
                     imagePath: "assets/images/islam_kibla-100.jpg",
                     label: 'Дуа',
-                    onTap: () => context.router.push(const QuranRoute()),
+                    onTap: () => context.router.push(const DuahRoute()),
                   ),
                   CategoryCard(
                     imagePath: "assets/images/islam_mosque-100.jpg",
                     label: 'Намаз',
-                    onTap: () => context.router.push(const QuranRoute()),
+                    onTap: () => context.router.push(const NamazRoute()),
                   ),
                 ],
               ),
@@ -73,8 +73,8 @@ class HomePageState extends ConsumerState<HomePage> {
                   ),
                   CategoryCard(
                     imagePath: "assets/images/islam_book_closed-100.jpg",
-                    label: 'Скоро',
-                    onTap: () => context.router.push(const QuranRoute()),
+                    label: 'Книги',
+                    onTap: () => context.router.push(const BooksRoute()),
                   ),
                 ],
               ),

@@ -15,7 +15,6 @@ class SurahListState {
     required this.inProgressSurahs,
   });
 
-  // Начальное состояние
   factory SurahListState.initial() {
     return SurahListState(
       surahs: [],
@@ -24,7 +23,6 @@ class SurahListState {
     );
   }
 
-  // Метод для копирования состояния с новыми значениями
   SurahListState copyWith({
     List<Surah>? surahs,
     List<int>? learnedSurahs,
@@ -43,7 +41,6 @@ class SurahListNotifier extends Notifier<SurahListState> {
 
   @override
   SurahListState build() {
-    // Инициализация и загрузка данных из локального хранилища Hive
     surahBox = Hive.box('processBox');
     return SurahListState.initial().copyWith(
       learnedSurahs: List<int>.from(surahBox.get('learnedSurahs', defaultValue: [])),
@@ -55,7 +52,6 @@ class SurahListNotifier extends Notifier<SurahListState> {
     final apiService = ref.read(quranApiServiceProvider);
     try {
       final surahs = await apiService.fetchSurahList();
-      // Обновляем состояние с полученными сурами
       state = state.copyWith(surahs: surahs);
     } catch (error) {
       state = state.copyWith(surahs: []);
@@ -63,7 +59,6 @@ class SurahListNotifier extends Notifier<SurahListState> {
     }
   }
 
-  // Добавление суры в список "Изученные"
   void toggleLearnedSurah(int surahNumber) {
     final updatedLearnedSurahs = List<int>.from(state.learnedSurahs);
     if (updatedLearnedSurahs.contains(surahNumber)) {
@@ -75,7 +70,6 @@ class SurahListNotifier extends Notifier<SurahListState> {
     _saveLearnedSurahs(updatedLearnedSurahs);
   }
 
-  // Добавление/удаление суры в список "В процессе"
   void toggleInProgressSurah(int surahNumber) {
     final updatedInProgressSurahs = List<int>.from(state.inProgressSurahs);
     if (updatedInProgressSurahs.contains(surahNumber)) {
@@ -87,22 +81,18 @@ class SurahListNotifier extends Notifier<SurahListState> {
     _saveInProgressSurahs(updatedInProgressSurahs);
   }
 
-  // Сохранение списка "Изученных" сур в Hive
   void _saveLearnedSurahs(List<int> learnedSurahs) {
     surahBox.put('learnedSurahs', learnedSurahs);
   }
 
-  // Сохранение списка "В процессе" сур в Hive
   void _saveInProgressSurahs(List<int> inProgressSurahs) {
     surahBox.put('inProgressSurahs', inProgressSurahs);
   }
 
-  // Проверка, находится ли сура в списке "Изученные"
   bool isLearned(int surahNumber) {
     return state.learnedSurahs.contains(surahNumber);
   }
 
-  // Проверка, находится ли сура в списке "В процессе"
   bool isInProgress(int surahNumber) {
     return state.inProgressSurahs.contains(surahNumber);
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:readquran/domain/providers/ayah_list_notifier.dart';
+import 'package:readquran/domain/providers/surah_list_notifier.dart';
 import 'package:readquran/presentation/providers/audio_player_notifier_provider.dart';
 import 'package:readquran/presentation/providers/current_surah_screen_state_provider.dart';
 
@@ -16,6 +17,7 @@ class AudioBottomBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final audioPlayerNotifier = ref.watch(audioPlayerNotifierProvider.notifier);
     final ayahs = ref.watch(ayahListNotifierProvider);
+    final surahs = ref.watch(surahListNotifierProvider);
     final totalDuration = audioPlayerNotifier.totalDuration ?? Duration.zero;
     final currentAyahIndex = ref.watch(currentAyahIndexNotifierProvider);
     final isPlaying = ref.watch(isPlayingProvider);
@@ -28,10 +30,17 @@ class AudioBottomBar extends ConsumerWidget {
     });
 
     return BottomAppBar(
-      height: 100,
+      height: 150,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(ayahs[currentAyahIndex].numberInSurah.toString()),
+            ],
+          ),
           ProgressBar(            
             thumbRadius: 5.0,
             timeLabelTextStyle: TextStyle(

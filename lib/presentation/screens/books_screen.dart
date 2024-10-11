@@ -1,19 +1,20 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+
 @RoutePage()
-class HadithScreen extends StatefulWidget {
-  const HadithScreen({super.key});
+class BooksScreen extends StatefulWidget {
+  const BooksScreen({super.key});
 
   @override
-  State<HadithScreen> createState() => _HadithScreenState();
+  State<BooksScreen> createState() => _BooksScreenState();
 }
 
-class _HadithScreenState extends State<HadithScreen> {
+class _BooksScreenState extends State<BooksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Хадисы'),
+        title: const Text('Книги'),
       ),
       body: const Center(
         child: Column(
@@ -21,8 +22,8 @@ class _HadithScreenState extends State<HadithScreen> {
           children: [
             Text('Страница в разработке...'),
           ],
-        )
-      )
+        ),
+      ),
     );
   }
 }

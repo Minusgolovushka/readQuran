@@ -86,12 +86,24 @@ class QuranScreenState extends ConsumerState<QuranScreen> {
                         icon: Icon(isLearned ? Icons.bookmark : Icons.bookmark_add_outlined),
                         onPressed: () {
                           surahListNotifier.toggleLearnedSurah(surah.number);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(isLearned ? 'Статус суры удален' : 'Статус суры: Изучено'),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
                         },
                       ),
                       IconButton(
                         icon: Icon(isInProgress ? Icons.timelapse : Icons.timer_outlined),
                         onPressed: () {
                           surahListNotifier.toggleInProgressSurah(surah.number);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(isInProgress ? 'Статус суры удален' : 'Статус суры: В процессе'),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
                         },
                       ),
                     ],

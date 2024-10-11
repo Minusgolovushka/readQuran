@@ -11,5 +11,9 @@ class AppRouter extends RootStackRouter {
    AutoRoute(page: CurrentSurahRoute.page),
    AutoRoute(page: LearnedSurahsRoute.page),
    AutoRoute(page: InProgressSurahsRoute.page),
+   AutoRoute(page: HadithRoute.page),
+   AutoRoute(page: BooksRoute.page),
+   AutoRoute(page: NamazRoute.page),
+   AutoRoute(page: DuahRoute.page),
  ];
 }

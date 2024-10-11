@@ -9,6 +9,6 @@ const Color lightCardColor = Color.fromARGB(255, 255, 255, 255);
 
 //DarkThemeColors
 const Color darkPrimaryColor = Color.fromARGB(255, 148, 148, 148);
-const Color darkSecondaryColor = Color.fromARGB(255, 29, 29, 29);
+const Color darkSecondaryColor = Color.fromARGB(255, 230, 230, 230);
 const Color darkOnSurfaceColor = Color.fromARGB(255, 201, 201, 201);
 const Color darkCardColor = Color.fromARGB(255, 31, 31, 31);
